@@ -21,24 +21,64 @@
       color: #333;
     }
 
-    /* Navigation Bar */
-    .navbar {
-      background-color: #004aad;
-      padding: 10px 20px;
-      text-align: center;
-      position: sticky;
-      top: 0;
-      z-index: 100;
-      display: flex;
-      justify-content: center;
-      gap: 20px;
-    }
+    <!-- Navigation Bar -->
+<div class="navbar">
+  <a href="#tv-audio">Television & Audio</a>
+  <a href="#fridges">Refrigerators & Freezers</a>
+  <a href="#small-appliances">Small Appliances</a>
+  <a href="#home-appliances">Home Appliances</a>
+  <a href="#kitchen-appliances">Kitchen Appliances</a>
+  <a href="#air-conditioners">Air Conditioners</a>
+  <a href="#washing-machines">Washing Machines</a>
+  <a href="#more">More</a>
+</div>
+
+<style>
+  /* Navigation Bar */
+  .navbar {
+    background-color: #004aad;
+    padding: 10px 20px;
+    display: flex;
+    overflow-x: auto; /* Allow horizontal scrolling */
+    white-space: nowrap; /* Prevent wrapping of links */
+    justify-content: flex-start; /* Align items to the left */
+    gap: 20px;
+    scrollbar-width: thin; /* Firefox: thin scrollbar */
+    scrollbar-color: #888 transparent; /* Firefox: custom colors */
+  }
+  .navbar a {
+    color: white;
+    font-size: 1.1em; /* Slightly smaller font size for mobile */
+    padding: 8px 15px;
+    white-space: nowrap; /* Prevent link text from wrapping */
+    text-decoration: none; /* Remove underline for better appearance */
+    border-radius: 4px;
+  }
+  .navbar a:hover {
+    text-decoration: underline;
+    background-color: #005bbb; /* Add a hover background */
+  }
+
+  /* Webkit Scrollbar Styles */
+  .navbar::-webkit-scrollbar {
+    height: 6px; /* Reduce scrollbar height */
+  }
+  .navbar::-webkit-scrollbar-thumb {
+    background: #bbb; /* Softer scrollbar color */
+    border-radius: 4px; /* Rounded scrollbar edges */
+  }
+  .navbar::-webkit-scrollbar-thumb:hover {
+    background: #999; /* Slightly darker on hover */
+  }
+
+  /* Mobile-Friendly Adjustments */
+  @media screen and (max-width: 768px) {
     .navbar a {
-      color: white;
-      font-size: 1.2em;
+      font-size: 1em; /* Adjust font size for smaller screens */
+      padding: 6px 12px; /* Adjust padding for smaller screens */
     }
-    .navbar a:hover {
-      text-decoration: underline;
+    .navbar {
+      padding: 8px 15px; /* Reduce overall padding */
     }
 
     /* Banner */
