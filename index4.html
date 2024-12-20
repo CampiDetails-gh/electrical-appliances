@@ -1,0 +1,162 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Campi - Electrical Appliances</title>
+  <style>
+    /* Your existing styles here, or the provided ones for styling */
+    body {
+      font-family: Arial, sans-serif;
+    }
+    .navbar {
+      background-color: #333;
+      padding: 10px;
+      text-align: center;
+    }
+    .navbar a {
+      color: white;
+      margin: 0 15px;
+      text-decoration: none;
+    }
+    .banner {
+      background: url('your-banner-image.jpg') no-repeat center center;
+      padding: 50px;
+      text-align: center;
+      color: white;
+    }
+    .product-grid {
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: space-around;
+    }
+    .product {
+      border: 1px solid #ddd;
+      margin: 10px;
+      padding: 20px;
+      width: 200px;
+      text-align: center;
+    }
+    .product img {
+      width: 100%;
+      height: auto;
+    }
+    .product-info {
+      margin-top: 10px;
+    }
+    .footer {
+      text-align: center;
+      padding: 10px;
+      background-color: #333;
+      color: white;
+    }
+  </style>
+</head>
+<body>
+
+  <!-- Navigation Bar -->
+  <div id="navbar" class="navbar"></div>
+
+  <!-- Banner -->
+  <div class="banner">
+    <h1>Welcome to Campi</h1>
+    <p>Your One-Stop Shop for Electrical Appliances</p>
+  </div>
+
+  <!-- Main Container for Products -->
+  <div id="product-container" class="container"></div>
+
+  <!-- Footer -->
+  <div class="footer">
+    <p>&copy; 2024 Campi. All Rights Reserved.</p>
+  </div>
+
+  <!-- JavaScript -->
+  <script>
+    // Google Sheets Configuration
+    const sheetId = "https://docs.google.com/spreadsheets/d/e/2PACX-1vQsGcPLYoVe9yc3lHQi3kVOm1v7SCTJ9kiRT3Ujud5fmTM6taDp0RhhbFvjx2iF-xbLWklQn3t-eZ-b/pubhtml"; // Replace with your Google Sheet ID
+    const sheetUrlBase = https://spreadsheets.google.com/feeds/list/${sheetId}/; // Base URL to fetch sheets
+
+    // Fetch Data from Google Sheets
+    async function fetchProducts() {
+      // Fetch categories (sheet names)
+      const sheetNames = ['Television & Audio', 'Refrigerators & Freezers', 'Small Appliances', 'Home Appliances', 'Kitchen Appliances', 'Air Conditioners', 'Washing Machines']; // Update this with your actual sheet names
+      const allProducts = [];
+
+      for (let category of sheetNames) {
+        const sheetUrl = ${sheetUrlBase}${category}/public/values?alt=json;
+
+        const response = await fetch(sheetUrl);
+        const data = await response.json();
+
+        // Parse Google Sheets data
+        const products = data.feed.entry.map(entry => ({
+          name: entry.gsx$productname.$t,
+          price: entry.gsx$price.$t,
+          code: entry.gsx$itemcode.$t,
+          image: entry.gsx$imageurl.$t,
+          description: entry.gsx$productdescription.$t,
+          category: category,  // Add category to the product data
+        }));
+
+        allProducts.push(...products);
+      }
+
+      displayProducts(allProducts);
+    }
+
+    // Display Products on the Page
+    function displayProducts(products) {
+      const container = document.getElementById("product-container");
+      const categories = [...new Set(products.map(product => product.category))];
+
+      // Create Navbar
+      const navbar = document.getElementById("navbar");
+      categories.forEach(category => {
+        const link = document.createElement("a");
+        link.href = #${category.toLowerCase().replace(/\s+/g, "-")};
+        link.textContent = category;
+        navbar.appendChild(link);
+      });
+
+      // Create Product Sections
+      categories.forEach(category => {
+        const section = document.createElement("div");
+        section.id = category.toLowerCase().replace(/\s+/g, "-");
+        section.classList.add("category");
+
+        const heading = document.createElement("h2");
+        heading.textContent = category;
+        section.appendChild(heading);
+
+        const grid = document.createElement("div");
+        grid.classList.add("product-grid");
+
+        products
+          .filter(product => product.category === category)
+          .forEach(product => {
+            const productCard = document.createElement("div");
+            productCard.classList.add("product");
+
+            productCard.innerHTML = `
+              <img src="${product.image}" alt="${product.name}">
+              <div class="product-info">
+                <h3>${product.name}</h3>
+                <p class="price">${product.price}</p>
+                <p class="code">Item Code: ${product.code}</p>
+                <p class="description">${product.description}</p>
+              </div>
+            `;
+            grid.appendChild(productCard);
+          });
+
+        section.appendChild(grid);
+        container.appendChild(section);
+      });
+    }
+
+    // Initialize
+    fetchProducts();
+  </script>
+</body>
+</html>
