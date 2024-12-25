@@ -33,7 +33,7 @@
   background: linear-gradient(to right, #9895cc, #d367d4, #00d4ff); /* Apply the gradient from left to right */
   overflow-x: auto;
   white-space: nowrap;
-  padding: 10px 0;
+  padding: 0;
 }
     .navbar a {
       display: inline-block;
@@ -50,7 +50,7 @@
 
     /* Webkit Scrollbar Styles */
     .navbar::-webkit-scrollbar {
-      height: 6px;
+      height: 3px;
     }
     .navbar::-webkit-scrollbar-thumb {
       background: #bbb;
@@ -108,7 +108,7 @@
     /* Banner */
     .banner {
       background: url('https://github.com/CampiDetails-gh/Test2/blob/main/Untitled%20design%20(1).png?raw=true') no-repeat center center/cover;
-      height: 150px;
+      height: 125px;
       text-align: center;
       color: white;
       display: flex;
@@ -132,8 +132,8 @@
         /* Product Categories */
         .category {
             max-width: 1200px;
-            margin: 20px auto;
-            padding: 20px;
+            margin: 10px auto;
+            padding: 10px;
             background: white;
             border-radius: 10px;
             box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
@@ -227,6 +227,41 @@
             margin: 20px auto;
             max-width: 800px;
         }
+
+        /* Search Bar Styling */
+        .search-container {
+            max-width: 600px;
+            margin: 20px auto;
+            padding: 0 20px;
+        }
+
+        .search-bar {
+            width: 100%;
+            padding: 12px;
+            border: 2px solid #9fa9b5;
+            border-radius: 25px;
+            font-size: 16px;
+            outline: none;
+            transition: border-color 0.3s ease;
+        }
+
+        .search-bar:focus {
+            border-color: #a8d252;
+        }
+
+    /* Hidden class for filtering */
+    .hidden {
+        display: none !important;
+    }
+
+    /* No results message */
+    .no-results {
+        text-align: center;
+        padding: 20px;
+        color: #666;
+        font-size: 1.1em;
+        display: none;
+    }
 
 /* Popup styling */
 .popup {
@@ -366,6 +401,15 @@
         <img src="logo.png" alt="Campi Logo">
         <h1>Electrical Appliances</h1>
     </div>
+
+<div class="search-container">
+    <input type="text" 
+           class="search-bar" 
+           placeholder="Search products by name or code..." 
+           id="searchInput"
+           autocomplete="on">
+</div>
+<div class="no-results">No products found matching your search.</div>
 
     <!-- Main Content -->
     <main>
@@ -514,6 +558,55 @@ document.addEventListener('DOMContentLoaded', () => {
     // Ensure the cart icon updates the counter on page load
     updateCartCounter();
 });
+
+        // Search functionality
+    function initializeSearch() {
+        const searchInput = document.getElementById('searchInput');
+        const noResultsMessage = document.querySelector('.no-results');
+
+        searchInput.addEventListener('input', function() {
+            const searchTerm = this.value.toLowerCase().trim();
+            const productCards = document.querySelectorAll('.product-card');
+            let hasVisibleProducts = false;
+
+            productCards.forEach(card => {
+                const productName = card.querySelector('h3').textContent.toLowerCase();
+                const productCode = card.querySelector('.code').textContent.toLowerCase();
+                const matches = productName.includes(searchTerm) || productCode.includes(searchTerm);
+                
+                card.classList.toggle('hidden', !matches);
+                if (matches) hasVisibleProducts = true;
+            });
+
+            // Show/hide category containers based on whether they have visible products
+            document.querySelectorAll('.category').forEach(category => {
+                const hasVisibleProductsInCategory = category.querySelector('.product-card:not(.hidden)');
+                category.classList.toggle('hidden', !hasVisibleProductsInCategory);
+            });
+
+            // Show/hide no results message
+            noResultsMessage.style.display = hasVisibleProducts ? 'none' : 'block';
+        });
+
+        // Clear search on escape key
+        searchInput.addEventListener('keydown', function(e) {
+            if (e.key === 'Escape') {
+                this.value = '';
+                this.dispatchEvent(new Event('input'));
+                this.blur();
+            }
+        });
+    }
+
+    // Update your existing DOMContentLoaded event listener
+    document.addEventListener('DOMContentLoaded', () => {
+        loadProducts();
+        initializeSearch();
+        cartIcon.addEventListener("click", sendToWhatsApp);
+        updateCartCounter();
+    });
+
+
 
     </script>
 </body>
